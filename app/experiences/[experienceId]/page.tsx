@@ -1,5 +1,6 @@
 import { whopSdk } from "@/lib/whop-sdk";
 import { headers } from "next/headers";
+import Calculator from '@/app/calculator/page';
 
 export default async function ExperiencePage({
 	params,
@@ -29,19 +30,29 @@ export default async function ExperiencePage({
 	// 'no_access' means the user does not have access to the whop
 	const { accessLevel } = result;
 
+	// Check if user has access
+	if (!result.hasAccess) {
+		return (
+			<div className="flex justify-center items-center h-screen px-8">
+				<h1 className="text-xl text-red-600">
+					You do not have access to this experience.
+				</h1>
+			</div>
+		);
+	}
+
+	// If user has access, show the calculator
 	return (
-		<div className="flex justify-center items-center h-screen px-8">
-			<h1 className="text-xl">
-				Hi <strong>{user.name}</strong>, you{" "}
-				<strong>{result.hasAccess ? "have" : "do not have"} access</strong> to
-				this experience. Your access level to this whop is:{" "}
-				<strong>{accessLevel}</strong>. <br />
-				<br />
-				Your user ID is <strong>{userId}</strong> and your username is{" "}
-				<strong>@{user.username}</strong>.<br />
-				<br />
-				You are viewing the experience: <strong>{experience.name}</strong>
-			</h1>
+		<div>
+			{/* Optional: Show user info at the top */}
+			<div className="bg-gray-800 text-white p-4 text-center">
+				<p className="text-sm">
+					Welcome <strong>{user.name}</strong>! You have <strong>{accessLevel}</strong> access to <strong>{experience.name}</strong>
+				</p>
+			</div>
+			
+			{/* Your Calculator */}
+			<Calculator />
 		</div>
 	);
 }
